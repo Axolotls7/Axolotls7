@@ -3,23 +3,42 @@
 #But if you really want to, you could do something with this
 U = open("Users.txt", "w")
 M = open("Messages.txt", "w")
-peeps = dict(read(open("Users.txt")))
-messages = list(read(open("Messages.txt")))
+peeps = dict((open("Users.txt", "r")).read())
+messages = list((open("Messages.txt", "r")).read())
 a = input("""Password
-
+          
 If new type new and trust the proccess""")
+B = ""
 if a == "new":
+    a = input("Password")
+    for i in range(0,len(a)):
+        B = B + chr(ord(a[i])-2)
+    User = input("Username")
     peeps.update(
-        {chr(ord(input(Password))-2):input(Username)})
+        {B:User}
+        )
+    
 else:
+    for i in range(0,len(a)):
+        B = B + chr(ord(a[i])-2)
     try:
-        print(peeps[chr(ord(a)-2)])
-    except(keyError):
+        User = peeps[B]
+        print()
+    except(KeyError):
         quit()
+print("type //help to see all commands")
 while True:
     a = input()
     if a == "//quit":
         break
-    else messages.append(a)
-U.write(messages)
-M.write(peeps)
+    elif a == "//see":
+        for i in range(0,len(messages)):
+            print(messages[i])
+    elif a == "//help":
+        print("""//quit
+//see
+//help""")
+    else:
+        messages.append(User+": "+a)
+U.write(str(messages))
+M.write(str(peeps))
