@@ -36,8 +36,7 @@ while True:
             print(messages[i])
     elif a == "//help":
         print("""//quit
-//see
-//help""")
+//see""")
     else:
         messages.append(User+": "+a)
 U.write(str(messages))
