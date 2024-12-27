@@ -1,5 +1,4 @@
 # Hello
-Hello fellow citizens of the **Realm of Computer Orders**[^1]\
+Hello fellow citizens of the **Realm of Computer Orders**[^a]\
 You've found this, my profile location.\
-No prize, but at some point there might be more stuff here.
-[^1]: *(also known as GitHub)*
+[^a]: *(also known as GitHub)*
