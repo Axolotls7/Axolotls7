@@ -5,20 +5,25 @@ U = open("Users.txt", "w")
 M = open("Messages.txt", "w")
 peeps = dict((open("Users.txt", "r")).read())
 messages = list((open("Messages.txt", "r")).read())
-a = input("""Password
-          
-If new type new and trust the proccess""")
+a = input("""
+
+Menu
+#0: Enter password
+#1: New account
+#2: quit
+#""")
 B = ""
-if a == "new":
-    a = input("Password")
+if a == "1":
+    a = input("Password, please: ")
     for i in range(0,len(a)):
         B = B + chr(ord(a[i])-2)
-    User = input("Username")
+    User = input("Username, please: ")
     peeps.update(
         {B:User}
         )
     
-else:
+elif a == "0":
+    a = input("Password, please: ")
     for i in range(0,len(a)):
         B = B + chr(ord(a[i])-2)
     try:
@@ -35,8 +40,11 @@ while True:
         for i in range(0,len(messages)):
             print(messages[i])
     elif a == "//help":
-        print("""//quit
-//see""")
+        print("""
+Commands
+//quit____
+//see: shows all messages
+//mail""")
     else:
         messages.append(User+": "+a)
 U.write(str(messages))
