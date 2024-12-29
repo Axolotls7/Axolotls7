@@ -19,7 +19,8 @@ a = input("""
 Menu
 #0: Enter password
 #1: New account
-#2: quit
+#2: Guest
+#3: quit
 
 #""")
 B = ""
@@ -32,7 +33,7 @@ if a == "1":
         B = B + chr(ord(a[i])-2)
     User = input("Username, please: ")
     try:
-        open(User+".txt","x")
+        open(User+".txt","x+")
     except:
         print("Sorry, account names are first-come, first-serve, and somebody came before you. Restart the appplication")
     peeps.update(
@@ -45,14 +46,25 @@ elif a == "0":
         B = B + chr(ord(a[i])-2)
     try:
         User = peeps[B]
-        print()
+        print("Welcome,",User)
     except(KeyError):
         quit()
+elif a == "2":
+    User = "Guest"
+elif a == "3":
+    quit()
+else:
+    print("what?")
+    quit()
 print("type //help to see all commands")
 while True:
     a = input()
     if a == "//quit":
         break
+    if a == "//mail":
+        mail = True
+        box = input("""Send mail to whom?
+        """)+".txt"
     elif a == "//see":
         for i in range(0,len(messages)):
             print(messages[i])
@@ -232,6 +244,15 @@ Licence:
 //distribution: show GNU GPL 3.0 section 16
 //license: show full GNU GPL 3.0""")
     elif User != "Guest":
-        messages.append(User+": "+a)
+        if mail:
+            with list(open(box)) as A, open(box, w) as B:
+                A.append(a)
+        else:
+            messages.append(User+": "+a)
+    elif User == "Guest" and mail:
+        print("guest user cannot send messages. Please log in or sign up.")
+    elif User == "Guest":
+        print("guest user cannot send messages. Please log in or sign up.")
+    mail = False
 U.write(str(messages))
 M.write(str(peeps))
