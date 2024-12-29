@@ -1,1 +1,2 @@
-Import easygui
+import easygui
+easygui.msgbox("Heyyy")
