@@ -2,6 +2,7 @@
 #It isn't good because it doesn't have a server and also some other things
 #But if you really want to, you could do something with this
 #Obligatory copyright statement: Copyright (C) 2024 Rhys Forsberg, see COPYING.txt for license or type //license while logged in
+import csv
 print("""Copyright (C) 2024 Axolotls7
     This program comes with ABSOLUTELY NO WARRANTY; for details type //warranty.
     This is free software, and you are welcome to redistribute it
@@ -10,10 +11,10 @@ print("""Copyright (C) 2024 Axolotls7
     If you believe that I have made a mistake in choosing the displayed sections, please go to the GitHub repository Axolotls7/Axolotls7 and make an issue about it or start a pull request
     
     IMPORTANT: '//' commands only work while logged in""")
-U = open("Users.txt", "w")
-M = open("Messages.txt", "w")
-peeps = dict((open("Users.txt", "r")).read())
-messages = list((open("Messages.txt", "r")).read())
+peeps = eval((open("Messenger/Users.txt", "r")).read())
+with open("Messenger/Messages.csv") as fp:
+    messages = csv.reader(fp, delimiter=",", quotechar='"')
+
 a = input("""
 
 Menu
@@ -26,14 +27,14 @@ Menu
 B = ""
 if a == "1":
     a = input("Password, please: ")
-    if a in peeps.keys:
+    if a in peeps.keys():
         print("Sorry, passwords are first-come, first-serve, and somebody came before you. Restart the appplication")
-            quit()
+        quit()
     for i in range(0,len(a)):
         B = B + chr(ord(a[i])-2)
     User = input("Username, please: ")
     try:
-        open(User+".txt","x+")
+        userBox = open("Messenger/"+User+".csv","x+")
     except:
         print("Sorry, account names are first-come, first-serve, and somebody came before you. Restart the appplication")
     peeps.update(
@@ -49,6 +50,7 @@ elif a == "0":
         print("Welcome,",User)
     except(KeyError):
         quit()
+    userBox = open("Messenger/"+User+".csv")
 elif a == "2":
     User = "Guest"
 elif a == "3":
@@ -61,15 +63,18 @@ while True:
     a = input()
     if a == "//quit":
         break
-    if a == "//mail":
+    if a == "//sendmail":
         mail = True
-        box = input("""Send mail to whom?
-        """)+".txt"
+        box = "Messenger/"+input("""Send mail to whom?
+        """)+".csv"
+        continue
+    elif a == "//mail" and User != "Guest":
+        print(userBox.read())
     elif a == "//see":
         for i in range(0,len(messages)):
             print(messages[i])
     elif a == "//license":
-        print((open("COPYING.txt","r")).read)
+        print((open("Messenger/COPYING.txt","r")).read)
     elif a == "//warranty":
         print("""15. Disclaimer of Warranty.
 
@@ -238,6 +243,7 @@ Basic
 //help: shows this
 Messages:
 //see: shows all messages
+//sendmail
 //mail: show mailbox(WORK IN PROGRESS)
 Licence:
 //warranty: show GNU GPL 3.0 section 15
@@ -245,8 +251,11 @@ Licence:
 //license: show full GNU GPL 3.0""")
     elif User != "Guest":
         if mail:
-            with list(open(box)) as A, open(box, w) as B:
+            with open(box) as fp:
+                A = [a for a in csv.reader(fp, delimiter=",", quotechar='"')]
+            with open(box, "w") as B:
                 A.append(a)
+                B.write(str(A))
         else:
             messages.append(User+": "+a)
     elif User == "Guest" and mail:
@@ -254,5 +263,6 @@ Licence:
     elif User == "Guest":
         print("guest user cannot send messages. Please log in or sign up.")
     mail = False
-U.write(str(messages))
-M.write(str(peeps))
+with open("Messenger/Messages.csv","w") as M, open("Messenger/Users.txt","w") as U:
+    M.write(str(messages))
+    U.write(str(peeps))
