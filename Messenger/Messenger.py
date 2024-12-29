@@ -1,7 +1,7 @@
 #This is a message-sending program
 #It isn't good because it doesn't have a server and also some other things
 #But if you really want to, you could do something with this
-#Obligatory copyright statement: Copyright (C) 2024 Rhys Forsberg, see LICENSE.txt for license or type //license while logged in
+#Obligatory copyright statement: Copyright (C) 2024 Rhys Forsberg, see COPYING.txt for license or type //license while logged in
 print("""Copyright (C) 2024 Axolotls7
     This program comes with ABSOLUTELY NO WARRANTY; for details type //warranty.
     This is free software, and you are welcome to redistribute it
@@ -57,7 +57,7 @@ while True:
         for i in range(0,len(messages)):
             print(messages[i])
     elif a == "//license":
-        print((open("LICENSE.txt","r")).read)
+        print((open("COPYING.txt","r")).read)
     elif a == "//warranty":
         print("""15. Disclaimer of Warranty.
 
