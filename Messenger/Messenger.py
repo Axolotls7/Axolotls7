@@ -25,12 +25,19 @@ Menu
 B = ""
 if a == "1":
     a = input("Password, please: ")
+    if a in peeps.keys:
+        print("Sorry, passwords are first-come, first-serve, and somebody came before you. Restart the appplication")
+            quit()
     for i in range(0,len(a)):
         B = B + chr(ord(a[i])-2)
     User = input("Username, please: ")
+    try:
+        open(User+".txt","x")
+    except:
+        print("Sorry, account names are first-come, first-serve, and somebody came before you. Restart the appplication")
     peeps.update(
         {B:User}
-        )
+    )
     
 elif a == "0":
     a = input("Password, please: ")
