@@ -74,7 +74,7 @@ while True:
         for i in range(0,len(messages)):
             print(messages[i])
     elif a == "//license":
-        print((open("Messenger/COPYING.txt","r")).read)
+        print((open("COPYING.txt","r")).read)
     elif a == "//warranty":
         print("""15. Disclaimer of Warranty.
 
