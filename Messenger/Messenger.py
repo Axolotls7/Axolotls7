@@ -258,11 +258,11 @@ Licence:
                 B.write(str(A))
         else:
             messages.append(User+": "+a)
-    elif User == "Guest" and mail:
-        print("guest user cannot send messages. Please log in or sign up.")
     elif User == "Guest":
         print("guest user cannot send messages. Please log in or sign up.")
     mail = False
-with open("Messenger/Messages.csv","w") as M, open("Messenger/Users.txt","w") as U:
-    M.write(str(messages))
+with open("Messenger/messages.csv", "wt") as fp:
+    writer = csv.writer(fp, delimiter=",")
+    writer.writerows(data)
+with open("Messenger/Users.txt","w") as U:
     U.write(str(peeps))
