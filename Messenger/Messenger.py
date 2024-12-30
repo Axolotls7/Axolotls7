@@ -3,6 +3,10 @@
 #But if you really want to, you could do something with this
 #Obligatory copyright statement: Copyright (C) 2024 Rhys Forsberg, see COPYING.txt for license or type //license while logged in
 import csv
+import os
+import traceback
+from time import sleep
+import random as rand
 print("""Copyright (C) 2024 Axolotls7
     This program comes with ABSOLUTELY NO WARRANTY; for details type //warranty.
     This is free software, and you are welcome to redistribute it
@@ -12,14 +16,14 @@ print("""Copyright (C) 2024 Axolotls7
     
     IMPORTANT: '//' commands only work while logged in""")
 peeps = eval((open("Messenger/Users.txt", "r")).read())
-with open("Messenger/Messages.csv") as fp:
-    messages = csv.reader(fp, delimiter=",", quotechar='"')
+with open("Messenger/messages.csv") as fp:
+    messages = [row for row in csv.reader(fp, delimiter=",", quotechar='"')]
 
 a = input("""
 
 Menu
-#0: Enter password
-#1: New account
+#0: Log in
+#1: Sign up
 #2: Guest
 #3: quit
 
@@ -28,29 +32,38 @@ B = ""
 if a == "1":
     a = input("Password, please: ")
     if a in peeps.keys():
-        print("Sorry, passwords are first-come, first-serve, and somebody came before you. Restart the appplication")
-        quit()
-    for i in range(0,len(a)):
-        B = B + chr(ord(a[i])-2)
-    User = input("Username, please: ")
+        for i in range(0,len(a)):
+            B = B + chr(ord(a[i])-2)
+    User = input("Username, please: ").capitalize()
     try:
         userBox = open("Messenger/"+User+".csv","x+")
-    except:
+    except(OSError):
         print("Sorry, account names are first-come, first-serve, and somebody came before you. Restart the appplication")
+        quit()
     peeps.update(
-        {B:User}
+        {User:B}
     )
     
 elif a == "0":
     a = input("Password, please: ")
     for i in range(0,len(a)):
         B = B + chr(ord(a[i])-2)
+    User = input("Username: ").capitalize()
     try:
-        User = peeps[B]
+        assert B == peeps[User]
         print("Welcome,",User)
-    except(KeyError):
+        userBox = open("Messenger/"+User+".csv")
+    except:
+        print("No.")
         quit()
-    userBox = open("Messenger/"+User+".csv")
+    if User == "Admin":
+        with open("Messenger/ALERTS.csv") as fp:
+            ALERTS = [row for row in csv.reader(fp, delimiter=",", quotechar='"')]
+        for i in range(0,len(ALERTS)):
+            J = ""
+            for j in ALERTS[i]:
+                J = J + j
+            print(J)
 elif a == "2":
     User = "Guest"
 elif a == "3":
@@ -59,24 +72,38 @@ else:
     print("what?")
     quit()
 print("type //help to see all commands")
+mail = False
+
+
 while True:
-    a = input()
-    if a == "//quit":
-        break
-    if a == "//sendmail":
-        mail = True
-        box = "Messenger/"+input("""Send mail to whom?
-        """)+".csv"
-        continue
-    elif a == "//mail" and User != "Guest":
-        print(userBox.read())
-    elif a == "//see":
-        for i in range(0,len(messages)):
-            print(messages[i])
-    elif a == "//license":
-        print((open("COPYING.txt","r")).read)
-    elif a == "//warranty":
-        print("""15. Disclaimer of Warranty.
+    try:
+        a = input()
+        if a == "":
+            continue
+        elif a == "//quit":
+            break
+        elif a == "//users":
+            print(peeps.keys())
+        elif a == "//sendmail":
+            mail = True
+            box = "Messenger/"+input("""Send mail to whom?
+""").capitalize()+".csv"
+            continue
+        elif a == "//mail" and User != "Guest":
+            print(userBox.read())
+        elif a == "//see":
+            for i in range(0,len(messages)):
+                if type(messages[i]) == list:
+                    J = ""
+                    for j in messages[i]:
+                        J = J + j
+                    print(J)
+                else:        
+                    print(messages[i])
+        elif a == "//license":
+            print((open("COPYING.txt","r")).read)
+        elif a == "//warranty":
+            print("""15. Disclaimer of Warranty.
 
   THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
 APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
@@ -86,9 +113,9 @@ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM
 IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
 ALL NECESSARY SERVICING, REPAIR OR CORRECTION.""")
-    elif a == "//distribution":
-        if input("It's really long. You sure?") == "yes":
-            print("""
+        elif a == "//distribution":
+            if input("It's really long. You sure?") == "yes":
+                print("""
           4. Conveying Verbatim Copies.
 
   You may convey verbatim copies of the Program's source code as you
@@ -236,8 +263,8 @@ in accord with this section must be in a format that is publicly
 documented (and with an implementation available to the public in
 source code form), and must require no special password or key for
 unpacking, reading or copying.""")
-    elif a == "//help":
-        print("""
+        elif a == "//help":
+            print("""
 Basic
 //quit: quit application
 //help: shows this
@@ -249,20 +276,96 @@ Licence:
 //warranty: show GNU GPL 3.0 section 15
 //distribution: show GNU GPL 3.0 section 16
 //license: show full GNU GPL 3.0""")
-    elif User != "Guest":
-        if mail:
-            with open(box) as fp:
-                A = [a for a in csv.reader(fp, delimiter=",", quotechar='"')]
-            with open(box, "w") as B:
-                A.append(a)
-                B.write(str(A))
-        else:
-            messages.append(User+": "+a)
-    elif User == "Guest":
-        print("guest user cannot send messages. Please log in or sign up.")
-    mail = False
-with open("Messenger/messages.csv", "wt") as fp:
+        elif a == "//ADMIN":
+            try:
+                assert User == "Admin"
+            except(AssertionError):
+                for i in range(1,51):
+                    try:
+                        raise AttributeError("YOU ARE NOT ADMIN")
+                    except(AttributeError):
+                        print(traceback.format_exc())
+                        try:
+                            assert User == "Admin"
+                        except:
+                            print("YOU ARE NOT ADMIN")
+                    try:
+                        print("Y0U 4"+chr(rand.randint(-4,4)*i)+"3 N0"+chr(i-rand.randint(-20,20))+" 40"+chr(i)+"M1N")
+                    except:
+                        print("DIE DIE DIE DIE")
+                    sleep(0.05)
+                try:
+                    raise AttributeError("YOU ARE NOT ADMIN")
+                except(AttributeError):
+                    print("DIE")
+                    print(traceback.format_exc())
+                print("  !!YOU ARE NOT ADMIN!!")
+                print("""//YOU WILL BE REPORTED\\\\
+\\\\YOU WILL BE REPORTED//""")
+                with open("Messenger/ALERTS.csv", "a") as fp:
+                    writer = csv.writer(fp, delimiter=",")
+                    writer.writerows(["ALERT: "+User+" Tried to //ADMIN"])
+                quit()
+            do = input("""<Hello, Admin. What shall I do this time>
+""").capitalize()
+            if do == "Kill":
+                do = input("""<Do I HAVE to?>
+""").capitalize()
+                if do == "Yes":
+                    do = input("""<*sigh* Okay. Kill whom?>
+""").capitalize()
+                    if do == "Yourself" or do == "You":
+                        print("*Facepalm* No.")
+                        continue
+                    elif do != ("nobody" or "Nobody"):
+                        try:
+                            del peeps[do]
+                            os.remove("Messenger/"+do+".csv")
+                        except(KeyError):
+                            print("<who?>")
+                            continue
+                    else:
+                        print("<Oh, phew. Bye!>")
+                    continue
+            elif do == "Show":
+                print("<...>")
+                do = input().capitalize()
+                if do == "Computer?":
+                    print("<...>")
+                    sleep(1)
+                    do = input("""<I don't wanna... it feels wrong.>
+""").capitalize()
+                    if do == "Please":
+                        print("<Okay...>")
+                        sleep(1)
+                        print("<gimmie a sec>")
+                        sleep(3)
+                        do = input(peeps).capitalize()
+                        if do == "Decrypt":
+                            do = input("<NO! Do it yourself!>").capitalize()
+                            if do == "Please?":
+                                print("<No.>")
+                                continue
+        elif User != "Guest":
+            if mail:
+                with open(box, "a") as fp:
+                    writer = csv.writer(fp, delimiter=",")
+                    writer.writerows(a)
+            else:
+                messages.append(User+": "+a)
+        elif User == "Guest":
+            print("guest user cannot send messages. Please log in or sign up.")
+        mail = False
+    except(KeyboardInterrupt):
+        a = input("""
+Don't do that, it won't save!
+""") 
+        if a == "OVERRIDE":
+            quit()
+
+
+with open("Messenger/messages.csv", "w") as fp:
     writer = csv.writer(fp, delimiter=",")
-    writer.writerows(data)
+    writer.writerows(messages)
 with open("Messenger/Users.txt","w") as U:
     U.write(str(peeps))
