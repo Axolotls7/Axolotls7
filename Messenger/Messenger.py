@@ -7,7 +7,7 @@ import os
 import traceback
 from time import sleep
 import random as rand
-print("""Copyright (C) 2024 Axolotls7
+print("""© 2024 Axolotls7
     This program comes with ABSOLUTELY NO WARRANTY; for details type //warranty.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type //distribution for details.
