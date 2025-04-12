@@ -49,3 +49,17 @@ def step():
 		return
 	if state == 1:
 		pos += 1
+
+# main loop
+while True:
+	step()
+	print(tape)
+	print(pos)
+	print(state)
+	match input("Continue?\n\t"):
+		case "y":
+			continue
+		case "n":
+			break
+		case _:
+			print("...taking that as a no.")
