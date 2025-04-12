@@ -6,9 +6,19 @@ Technically, I think an actual Turing machine would have changable instructions,
 # startup
 symbols = {0, 1, "A", "B"}
 tape = list(input("Enter starting tape:\n\t"))
-for i in len(tape):
-	if (not type(tape[i]).__name__ in ("int", "string")) or (not tape[i] in symbols):
-		tape[i] = 0 if type(tape[i]).__name__ == "int" else "A"
+for i in range(0,len(tape)):
+	try:
+		tape[i] = int(tape[i])
+	except ValueError:
+		try:
+			assert tape[i] in symbols
+		except AssertionError:
+			tape[i] = "A"
+	else:
+		try:
+			assert tape[i] in symbols
+		except AssertionError:
+			tape[i] = 0
 while True:
 	state = input("Enter starting state:\n\t")
 	try:
@@ -33,6 +43,9 @@ while True:
 
 # instructions
 def step():
+	global pos
+	global state
+	global tape
 	pos = pos % len(tape)
 	if tape[pos] == "A":
 		state = "A"
@@ -43,9 +56,11 @@ def step():
 		return
 	if state == "A":
 		state = tape[pos]
+		tape[pos] = "B"
 		return
-	if state == "B":
+	if tape[pos] == "B":
 		tape[pos] = state
+		pos += 1
 		return
 	if state == 1:
 		pos += 1
